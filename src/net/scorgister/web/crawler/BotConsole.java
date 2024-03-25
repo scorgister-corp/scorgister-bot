@@ -43,6 +43,30 @@ public class BotConsole extends Thread {
 					System.out.println(crawler.getVisitedURLs().size());
 					break;
 					
+				case "length":
+					crawler = askCrawler();
+					if(crawler == null) {
+						System.out.println("No crawling selected");
+						break;
+					}
+					
+					System.out.println(crawler.getLength());
+					break;
+					
+				case "ratio":
+					crawler = askCrawler();
+					if(crawler == null) {
+						System.out.println("No crawling selected");
+						break;
+					}
+					
+					System.out.println((float) ((float) crawler.getLength() / (float) crawler.getVisitedURLs().size()));
+					break;
+					
+				case "list":
+					printCrawlerList();
+					break;
+					
 				case "save":
 					crawler = askCrawler();
 					if(crawler == null) {
@@ -72,6 +96,9 @@ public class BotConsole extends Thread {
 					
 					crawler.stop();
 					crawlers.remove(crawler);
+					break;
+				case "exit":
+					System.exit(0);
 					break;
 			}
 		}
