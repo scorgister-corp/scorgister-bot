@@ -1,12 +1,16 @@
 package net.scorgister.web.crawler;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
 public class BotConsole extends Thread {
 	
-	public static final String HELLO = "  /$$$$$$                                          /$$             /$$                               /$$$$$$$              /$$    \r\n" + 
+	public static final String HELLO_WORLD = "  /$$$$$$                                          /$$             /$$                               /$$$$$$$              /$$    \r\n" + 
 			" /$$__  $$                                        |__/            | $$                              | $$__  $$            | $$    \r\n" + 
 			"| $$  \\__/  /$$$$$$$  /$$$$$$   /$$$$$$   /$$$$$$  /$$  /$$$$$$$ /$$$$$$    /$$$$$$   /$$$$$$       | $$  \\ $$  /$$$$$$  /$$$$$$  \r\n" + 
 			"|  $$$$$$  /$$_____/ /$$__  $$ /$$__  $$ /$$__  $$| $$ /$$_____/|_  $$_/   /$$__  $$ /$$__  $$      | $$$$$$$  /$$__  $$|_  $$_/  \r\n" + 
@@ -18,16 +22,17 @@ public class BotConsole extends Thread {
 			"                                        |  $$$$$$/                                                                                \r\n" + 
 			"                                         \\______/                                                                                 ";
 	private Scanner scan;
-	
+	private Compiler compiler;
 	private List<WebCrawler> crawlers = new ArrayList<WebCrawler>();
 	
 	public BotConsole() {
 		this.scan = new Scanner(System.in);
+		this.compiler = new Compiler();
 	}
 	
 	@Override
 	public void run() {
-		System.out.println(HELLO);
+		System.out.println(HELLO_WORLD);
 		
 		while(true) {
 			String cmd = askString(">>");
@@ -87,6 +92,18 @@ public class BotConsole extends Thread {
 					crawler.crawl();
 					break;
 					
+				case "compile":
+					List<String> files = new ArrayList<String>();
+					files.add("mon-ent-occitanie.fr.json");
+					files.add("www.nasa.gov.json");
+					try {
+						Compiler.compile(files);
+					} catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+					
 				case "stop":
 					crawler = askCrawler();
 					if(crawler == null) {
@@ -97,6 +114,7 @@ public class BotConsole extends Thread {
 					crawler.stop();
 					crawlers.remove(crawler);
 					break;
+					
 				case "exit":
 					System.exit(0);
 					break;
