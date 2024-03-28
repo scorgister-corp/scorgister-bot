@@ -2384,6 +2384,11 @@
       "mimeType": "text/html"
     },
     {
+      "url": "https://www.youtube.com/iframe_api",
+      "title": "Tess",
+      "mimeType": "text/javascript"
+    },
+    {
       "url": "https://www.youtube.com/embed/v",
       "title": "YouTube",
       "mimeType": "text/html"

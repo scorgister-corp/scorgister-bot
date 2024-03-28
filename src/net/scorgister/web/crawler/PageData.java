@@ -24,5 +24,20 @@ public class PageData {
 	public String getMimeType() {
 		return mimeType;
 	}
+	
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "[url=" + url + ", title=" + title + ", mimeType=" + mimeType + "]";
+	}
 
 }

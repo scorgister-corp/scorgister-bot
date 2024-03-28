@@ -1,12 +1,11 @@
 package net.scorgister.web.crawler;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import net.scorgister.web.crawler.command.Command;
+import net.scorgister.web.crawler.command.Commands;
 
 public class BotConsole extends Thread {
 	
@@ -22,12 +21,11 @@ public class BotConsole extends Thread {
 			"                                        |  $$$$$$/                                                                                \r\n" + 
 			"                                         \\______/                                                                                 ";
 	private Scanner scan;
-	private Compiler compiler;
 	private List<WebCrawler> crawlers = new ArrayList<WebCrawler>();
 	
 	public BotConsole() {
 		this.scan = new Scanner(System.in);
-		this.compiler = new Compiler();
+		Commands.init();
 	}
 	
 	@Override
@@ -37,93 +35,19 @@ public class BotConsole extends Thread {
 		while(true) {
 			String cmd = askString(">>");
 			
-			switch(cmd) {
-				case "size":
-					WebCrawler crawler = askCrawler();
-					if(crawler == null) {
-						System.out.println("No crawling selected");
-						break;
-					}
-					
-					System.out.println(crawler.getVisitedURLs().size());
-					break;
-					
-				case "length":
-					crawler = askCrawler();
-					if(crawler == null) {
-						System.out.println("No crawling selected");
-						break;
-					}
-					
-					System.out.println(crawler.getLength());
-					break;
-					
-				case "ratio":
-					crawler = askCrawler();
-					if(crawler == null) {
-						System.out.println("No crawling selected");
-						break;
-					}
-					
-					System.out.println((float) ((float) crawler.getLength() / (float) crawler.getVisitedURLs().size()));
-					break;
-					
-				case "list":
-					printCrawlerList();
-					break;
-					
-				case "save":
-					crawler = askCrawler();
-					if(crawler == null) {
-						System.out.println("No crawling selected");
-						break;
-					}
-					
-					crawler.saveSiteMapToJson();
-					break;
-					
-				case "start":
-					String rootURL = askString("Root URL");
-					int maxThreads = askInt("Max threads");
-					
-					crawler = new WebCrawler(rootURL, maxThreads);
-					crawlers.add(crawler);
-					
-					crawler.crawl();
-					break;
-					
-				case "compile":
-					List<String> files = new ArrayList<String>();
-					files.add("mon-ent-occitanie.fr.json");
-					files.add("www.nasa.gov.json");
-					try {
-						Compiler.compile(files);
-					} catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-					
-				case "stop":
-					crawler = askCrawler();
-					if(crawler == null) {
-						System.out.println("No crawling selected");
-						break;
-					}
-					
-					crawler.stop();
-					crawlers.remove(crawler);
-					break;
-					
-				case "exit":
-					System.exit(0);
-					break;
-			}
+			Command.execut(cmd, this);
 		}
 	}
 	
+	public void addWebCrawler(WebCrawler crawler) {
+		crawlers.add(crawler);
+	}
 	
-	private void printCrawlerList() {
+	public void removeWebCrawler(WebCrawler crawler) {
+		crawlers.remove(crawler);
+	}
+	
+	public void printCrawlerList() {
 		System.out.println();
 		for(int i = 0; i < crawlers.size(); i++)
 			System.out.println(i + ": " + crawlers.get(i).getRootURL());
